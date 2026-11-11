@@ -11,6 +11,10 @@
 - 面板的展开状态在当前布局中统一生效；笔记内容随当前 Space 和所选标签页切换。
 - 同一标签页中的 Agent 共用该标签页的笔记。切换 Agent 或隐藏面板不会删除笔记。
 
+点击 Space、Tab 标题旁的 `−`、`+`，可分别调整两个区域的笔记字号。
+默认 13px，每次调整 1px，范围为 10～28px；标题和按钮的大小不变。
+字号按区域保存，切换 Space 或标签页时保持不变，重启应用后也会恢复。
+
 本模块适用于 Herdr **桌面应用**。安装器支持默认 `main` 布局，以及保留相同结构的布局副本，
 不保证兼容所有自定义布局和操作系统。安装适配以 Herdr 0.1.14、0.1.15 的默认结构为准。
 详细验证范围见 [VALIDATION.md（韩语）](VALIDATION.md)。
@@ -101,7 +105,7 @@ Herdr 模块属于受信任代码（trusted code），并非能阻止其他模�
 [SECURITY.md（韩语）](SECURITY.md)，已完成的验证和仍未验证的项目见
 [VALIDATION.md（韩语）](VALIDATION.md)。
 
-GitHub Actions 已使用 Node 22，在 Linux、macOS 和 Windows 上分别通过 **31 项自动测试**。
+GitHub Actions 已使用 Node 22，在 Linux、macOS 和 Windows 上分别通过 **36 项自动测试**。
 TypeScript、ESLint 和 Herdr 原生检查也已通过；实际 Herdr 窗口的安装与重启验证仅在 Linux 上完成。
 这不代表 macOS、Windows 的 Herdr 界面或实际输入法已经过验证。
 

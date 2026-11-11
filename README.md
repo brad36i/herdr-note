@@ -11,6 +11,10 @@ Open or close it with the **Note button immediately to the left of Files** in th
 - The panel's open or closed state applies across the current layout. Its notes follow the current Space and tab.
 - Agents in the same tab share its note. Switching Agents or hiding the panel does not delete notes.
 
+Use `−` and `+` beside each Space or Tab heading to adjust that area's note text independently.
+The default is 13px, with 1px steps from 10 to 28px; headings and buttons stay the same size.
+These are area settings, retained when switching Spaces or tabs and after restarting the app.
+
 This mod is for the **Herdr desktop app**. The installer supports the default `main` layout and
 copies that retain its structure, based on Herdr 0.1.14 and 0.1.15. Compatibility with every custom
 layout or operating system is not guaranteed. See [VALIDATION.md](VALIDATION.md) (Korean) for the test scope.
@@ -105,7 +109,7 @@ The installer reads local files, creates copies, and runs the Herdr CLI. See
 [SECURITY.md](SECURITY.md) (Korean) for runtime and installer effects, and
 [VALIDATION.md](VALIDATION.md) (Korean) for test results and remaining gaps.
 
-All **31 automated tests pass on Linux, macOS, and Windows** with Node 22 in GitHub Actions.
+All **36 automated tests pass on Linux, macOS, and Windows** with Node 22 in GitHub Actions.
 TypeScript checkJs, ESLint, and native Herdr checks also pass. Native views and app restart were
 verified on Linux with Herdr 0.1.14; the installer and restart were verified with 0.1.15.
 Native macOS and Windows GUI behavior, physical IME input, OS logout, reboot, and power loss

@@ -8,9 +8,12 @@ export async function host(saved = new Map(), preferences = new Map()) {
       tabs: [{ id: "t1", name: "First", active: true }, { id: "t2", name: "Second", active: false }] }],
     machines: [{ name: null, layout: "ready" }],
     focus: { space: "s1", tab: "t1" },
-    writes: 0, notifications: 0, flushes: 0, inputs: [],
+    writes: 0, notifications: 0, flushes: 0, stopped: 0, inputs: [],
   };
-  const cx = { notify() { state.notifications++; } };
+  const cx = {
+    notify() { state.notifications++; },
+    stop_propagation() { state.stopped++; },
+  };
   const element = (kind) => {
     const target = { kind, nodes: [], handlers: {}, styles: {} };
     const proxy = new Proxy(target, {

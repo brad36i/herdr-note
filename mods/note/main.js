@@ -4,6 +4,7 @@ import { spaces, machines, focused, shared, setShared, theme } from "herdr";
 import { STATE_KEY, readState, contexts, getText, setText, pruneTabs, canEdit } from "./model.js";
 
 const SCOPES = ["space", "tab"];
+const FONT_MIN = 10, FONT_MAX = 28;
 
 export default class Note extends View {
   init() {
@@ -12,13 +13,18 @@ export default class Note extends View {
     this.heights = {};
     this.folded = { space: false, tab: false };
     this.sizes = [300, 300];
+    this.fontSizes = { space: 13, tab: 13 };
     try {
       const saved = JSON.parse(localStorage.getItem("panel") ?? "null");
       if (saved?.folded) {
         for (const scope of SCOPES) this.folded[scope] = saved.folded[scope] === true;
       }
-      if (saved?.sizes?.length === 2 && saved.sizes.every(n => Number.isFinite(n) && n >= 80)) {
+      if (Array.isArray(saved?.sizes) && saved.sizes.length === 2 && saved.sizes.every(n => Number.isFinite(n) && n >= 80)) {
         this.sizes = saved.sizes;
+      }
+      for (const scope of SCOPES) {
+        const size = saved?.fontSizes?.[scope];
+        if (Number.isInteger(size) && size >= FONT_MIN && size <= FONT_MAX) this.fontSizes[scope] = size;
       }
     } catch { /* A broken panel preference must not affect notes. */ }
     // Retained native state must be created in init, never during render.
@@ -34,7 +40,7 @@ export default class Note extends View {
   }
 
   preferences() {
-    localStorage.setItem("panel", JSON.stringify({ folded: this.folded, sizes: this.sizes }));
+    localStorage.setItem("panel", JSON.stringify({ folded: this.folded, sizes: this.sizes, fontSizes: this.fontSizes }));
   }
 
   sync(scope, context, state, liveSpaces, liveMachines) {
@@ -79,6 +85,26 @@ export default class Note extends View {
     cx.notify();
   }
 
+  fontButton(scope, delta, colors) {
+    const enabled = delta < 0 ? this.fontSizes[scope] > FONT_MIN : this.fontSizes[scope] < FONT_MAX;
+    const title = scope === "space" ? "Space" : "Tab";
+    return div().id(`note-${scope}-font-${delta < 0 ? "minus" : "plus"}`)
+      .w(22).h(24).flex_none().flex().items_center().justify_center().rounded(4)
+      .opacity(enabled ? 1 : 0.4)
+      .when(enabled, el => el.cursor_pointer().hover(style => style.bg(colors.hover)))
+      .accessibility_label(`${title} 글자 크기 ${delta < 0 ? "줄이기" : "늘리기"}`)
+      .on_mouse_down("left", (_event, cx) => cx.stop_propagation())
+      .on_click((_event, cx) => {
+        cx.stop_propagation();
+        const next = Math.max(FONT_MIN, Math.min(FONT_MAX, this.fontSizes[scope] + delta));
+        if (next === this.fontSizes[scope]) return;
+        this.fontSizes[scope] = next;
+        this.preferences();
+        cx.notify();
+      })
+      .child(delta < 0 ? "−" : "+");
+  }
+
   section(scope, context, colors) {
     const folded = this.folded[scope], editor = this.editors[scope];
     const title = scope === "space" ? "Space" : "Tab";
@@ -94,7 +120,10 @@ export default class Note extends View {
         })
         .child(div().text_color(colors.dim).child(folded ? "▸" : "▾"))
         .child(div().font_semibold().child(title))
-        .child(div().flex_1().min_w(0).truncate().text_color(colors.dim).child(context?.label ?? "선택 없음")))
+        .child(div().flex_1().min_w(0).truncate().text_color(colors.dim).child(context?.label ?? "선택 없음"))
+        .child(this.fontButton(scope, -1, colors))
+        .child(div().id(`note-${scope}-font-size`).w(22).flex_none().text_center().child(String(this.fontSizes[scope])))
+        .child(this.fontButton(scope, 1, colors)))
       .when(!folded, el => el.child(editor.context
         ? div().id(`note-${scope}-body`).flex_1().min_h(0).min_w(0).p(8)
           .on_size_change((size, cx) => {
@@ -102,6 +131,7 @@ export default class Note extends View {
             if (this.heights[scope] !== height) { this.heights[scope] = height; cx.notify(); }
           })
           .child(Textarea.new(editor.input).w_full().h(this.heights[scope] ?? 200)
+            .text_size(this.fontSizes[scope])
             .accessibility_label(`${title} 메모`))
         : div().flex_1().p(12).text_color(colors.dim)
           .child(context ? "연결이 준비되면 메모를 편집할 수 있습니다." : `${title}를 선택하세요.`)));
