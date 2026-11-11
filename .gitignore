@@ -1,4 +1,5 @@
 .validation/
+_workspace/
 node_modules/
 .env
 .env.*
