@@ -1,0 +1,14 @@
+{
+  "name": "note",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Space and tab notes for Herdr, with a toggle to the left of Files.",
+  "repository": { "type": "git", "url": "https://github.com/brad36i/herdr-note.git" },
+  "engines": { "node": ">=22" },
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules --test test/*.test.js",
+    "check": "node scripts/check.mjs",
+    "check:native": "herdr-app check mods/note"
+  }
+}

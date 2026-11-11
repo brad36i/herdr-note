@@ -1,0 +1,9 @@
+.validation/
+node_modules/
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+mods/note/*.d.ts
+mods/note/jsconfig.json
