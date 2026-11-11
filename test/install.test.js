@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, cpSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, existsSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { appHome, patchToolbar, install } from "../scripts/install.mjs";
@@ -34,9 +34,10 @@ function fixture(t) {
     state.commands.push(action);
     if (action === state.fail && values.name !== "main") throw new Error("simulated host failure");
     if (action === "mod.clone") {
-      cpSync(join(home, "mods", values.name), join(home, "mods", values.as), { recursive: true, errorOnExist: true, force: false });
+      mkdirSync(join(home, "mods", values.as));
+      copyFileSync(join(home, "mods", values.name, "main.js"), join(home, "mods", values.as, "main.js"));
     } else if (action === "layout.clone") {
-      cpSync(join(home, "layouts", `${values.name}.json`), join(home, "layouts", `${values.as}.json`), { errorOnExist: true, force: false });
+      copyFileSync(join(home, "layouts", `${values.name}.json`), join(home, "layouts", `${values.as}.json`));
       state.layout = values.as;
       if (state.switchDuringClone) state.layout = "main";
     } else if (action === "layout.set") {
@@ -133,7 +134,10 @@ test("a user switching layouts during installation cannot redirect edits into th
 
 test("an identical runtime can be reused and host errors restore the original layout", async t => {
   const f = fixture(t);
-  cpSync(new URL("../mods/note", import.meta.url), join(f.home, "mods/note"), { recursive: true });
+  mkdirSync(join(f.home, "mods/note"));
+  for (const file of ["main.js", "model.js", "mod.json"]) {
+    copyFileSync(new URL(`../mods/note/${file}`, import.meta.url), join(f.home, "mods/note", file));
+  }
   const plan = await install({ ...f, dryRun: true });
   assert.equal(plan.reuseNote, true);
   f.state.errors = ["simulated render error"];
