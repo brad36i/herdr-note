@@ -53,7 +53,9 @@ Space별 Files/Changes 복원과 독립적인 `layout.toggle`을 사용한다.
 재시작 후 복제 레이아웃과 메모 복원을 확인했다. native errors는 0개였다. macOS·Windows나
 지원 대상 밖의 사용자 레이아웃에서 native 검증을 완료한 것으로 해석하면 안 된다.
 
-GitHub Actions는 Node 22로 Linux·macOS·Windows의 자동 테스트를 실행한다. 이것은
+GitHub Actions에서 Node 22로 Linux·macOS·Windows 각각 **31개 자동 테스트가 통과했다**.
+한글 경로의 재귀 fixture 복사에서 Windows Node 프로세스가 종료되어 단일 파일 복사로
+단순화한 뒤 재검증했다. 설치기와 런타임은 변경하지 않았다. 이것은
 각 OS의 Herdr GUI·실제 입력기를 검증하는 작업과는 다르다.
 
 ## 미검증 범위와 한계
