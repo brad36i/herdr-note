@@ -105,7 +105,7 @@ Herdr 模块属于受信任代码（trusted code），并非能阻止其他模�
 [SECURITY.md（韩语）](SECURITY.md)，已完成的验证和仍未验证的项目见
 [VALIDATION.md（韩语）](VALIDATION.md)。
 
-GitHub Actions 已使用 Node 22，在 Linux、macOS 和 Windows 上分别通过 **36 项自动测试**。
+GitHub Actions 已使用 Node 22，在 Linux、macOS 和 Windows 上分别通过 **38 项自动测试**。
 TypeScript、ESLint 和 Herdr 原生检查也已通过；实际 Herdr 窗口的安装与重启验证仅在 Linux 上完成。
 这不代表 macOS、Windows 的 Herdr 界面或实际输入法已经过验证。
 

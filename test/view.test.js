@@ -260,3 +260,59 @@ test("resizing type preserves pending composition and editor identity across tab
   assert.equal(h.state.inputs.length, 2);
   assert.equal(editors.tab.value(), "한글 조합 중");
 });
+
+// Builder contracts only: the host double does not calculate native pixel bounds.
+function assertEditorFillsBody(tree, scope) {
+  const body = find(tree, n => n.styles.id?.[0] === `note-${scope}-body`);
+  assert.ok(body, `${scope} body exists`);
+  assert.equal(body.kind, "v_flex");
+  assert.ok("flex_1" in body.styles);
+  assert.equal(body.styles.min_h?.[0], 0);
+  assert.equal(body.handlers.on_size_change, undefined, "layout must not feed measured pixels back into height");
+  const editor = find(body, n => n.kind === "Textarea");
+  assert.ok("w_full" in editor.styles);
+  assert.ok("h_full" in editor.styles);
+  assert.equal(editor.styles.min_h?.[0], 0);
+  assert.equal(editor.styles.h, undefined, "the editor must not use a fixed or measured pixel height");
+}
+
+test("both editors fill their remaining section height on the first render without measurement", async () => {
+  const h = await host();
+  const tree = h.view.render();
+  assertEditorFillsBody(tree, "space");
+  assertEditorFillsBody(tree, "tab");
+  assert.equal(h.state.notifications, 0);
+  assert.equal(h.state.writes, 0);
+});
+
+test("split, collapse and font changes retain fill constraints, composition and editor state", async () => {
+  const h = await host();
+  let tree = h.view.render();
+  const editors = { space: h.view.editors.space.input, tab: h.view.editors.tab.input };
+  editors.space.type("Space ");
+  editors.tab.type("Tab ");
+  editors.space.compose("Space 한글 조합");
+  editors.tab.compose("Tab 한글 조합");
+  const writes = h.state.writes;
+  find(tree, n => n.kind === "v_resizable").handlers.on_resize([180, 420]);
+  for (const scope of ["space", "tab"]) {
+    tree = h.view.render();
+    find(tree, n => n.styles.id?.[0] === `note-${scope}-toggle`).handlers.on_click({}, h.cx);
+    tree = h.view.render();
+    assert.equal(find(tree, n => n.styles.id?.[0] === `note-${scope}-body`), null);
+    assertEditorFillsBody(tree, scope === "space" ? "tab" : "space");
+    find(tree, n => n.styles.id?.[0] === `note-${scope}-toggle`).handlers.on_click({}, h.cx);
+    fontControl(h, scope, "plus");
+  }
+  tree = h.view.render();
+  find(tree, n => n.kind === "v_resizable").handlers.on_resize([420, 180]);
+  tree = h.view.render();
+  for (const scope of ["space", "tab"]) {
+    assertEditorFillsBody(tree, scope);
+    assert.equal(h.view.editors[scope].input, editors[scope]);
+  }
+  assert.equal(editors.space.value(), "Space 한글 조합");
+  assert.equal(editors.tab.value(), "Tab 한글 조합");
+  assert.equal(h.state.inputs.length, 2);
+  assert.equal(h.state.writes, writes);
+});

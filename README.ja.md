@@ -116,7 +116,7 @@ note ランタイムは、ネットワーク送信、シェルの実行、クリ
 ランタイムとインストーラーの変更範囲は [SECURITY.md（韓国語）](SECURITY.md)、
 実施した検証と未検証の項目は [VALIDATION.md（韓国語）](VALIDATION.md) に記載しています。
 
-GitHub Actions では、Node 22 を使って Linux・macOS・Windows でそれぞれ 36 件の
+GitHub Actions では、Node 22 を使って Linux・macOS・Windows でそれぞれ 38 件の
 自動テストが通過しています。Linux では TypeScript checkJs、ESLint、Herdr のネイティブ検査に加え、
 実際のアプリ画面でインストールと再起動を検証しました。macOS・Windows の Herdr GUI や
 実際の入力メソッド、OS からのログアウト・再起動・電源断は未検証です。

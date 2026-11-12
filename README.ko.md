@@ -110,7 +110,7 @@ Herdr 모드는 trusted code이며 다른 모드나 같은 계정의 프로그�
 어디까지 변경하는지는 [SECURITY.md](SECURITY.md)에 설명했습니다. 검증 결과와 미검증 항목은
 [VALIDATION.md](VALIDATION.md)에서 확인할 수 있습니다.
 
-Linux·macOS·Windows에서 각각 자동 테스트 36개가 통과했습니다. 타입·ESLint 검사와
+Linux·macOS·Windows에서 각각 자동 테스트 38개가 통과했습니다. 타입·ESLint 검사와
 Linux의 Herdr native 검사도 통과했습니다. macOS·Windows의 실제 Herdr 화면과 입력기는
 아직 검증하지 않았습니다.
 

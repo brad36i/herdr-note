@@ -109,7 +109,7 @@ The installer reads local files, creates copies, and runs the Herdr CLI. See
 [SECURITY.md](SECURITY.md) (Korean) for runtime and installer effects, and
 [VALIDATION.md](VALIDATION.md) (Korean) for test results and remaining gaps.
 
-All **36 automated tests pass on Linux, macOS, and Windows** with Node 22 in GitHub Actions.
+All **38 automated tests pass on Linux, macOS, and Windows** with Node 22 in GitHub Actions.
 TypeScript checkJs, ESLint, and native Herdr checks also pass. Native views and app restart were
 verified on Linux with Herdr 0.1.14; the installer and restart were verified with 0.1.15.
 Native macOS and Windows GUI behavior, physical IME input, OS logout, reboot, and power loss

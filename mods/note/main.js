@@ -10,7 +10,6 @@ export default class Note extends View {
   init() {
     this.editors = {};
     this.closed = false;
-    this.heights = {};
     this.folded = { space: false, tab: false };
     this.sizes = [300, 300];
     this.fontSizes = { space: 13, tab: 13 };
@@ -125,12 +124,8 @@ export default class Note extends View {
         .child(div().id(`note-${scope}-font-size`).w(22).flex_none().text_center().child(String(this.fontSizes[scope])))
         .child(this.fontButton(scope, 1, colors)))
       .when(!folded, el => el.child(editor.context
-        ? div().id(`note-${scope}-body`).flex_1().min_h(0).min_w(0).p(8)
-          .on_size_change((size, cx) => {
-            const height = Math.max(24, Math.floor(size.height - 16));
-            if (this.heights[scope] !== height) { this.heights[scope] = height; cx.notify(); }
-          })
-          .child(Textarea.new(editor.input).w_full().h(this.heights[scope] ?? 200)
+        ? v_flex().id(`note-${scope}-body`).flex_1().min_h(0).min_w(0).p(8)
+          .child(Textarea.new(editor.input).w_full().h_full().min_h(0)
             .text_size(this.fontSizes[scope])
             .accessibility_label(`${title} 메모`))
         : div().flex_1().p(12).text_color(colors.dim)
